@@ -2,14 +2,23 @@ version: 0.2
 
 env:
   secrets-manager:
-    SECRET_USERNAME:"pipeline-docker-auth:username"
-    SECRET_PASSWORD:"pipeline-docker-auth:password"
+    SECRET_USERNAME: "pipeline-docker-auth:username"
+    SECRET_PASSWORD: "pipeline-docker-auth:password"
 
 phases:
+  pre_build:
+    commands:
+      - echo "Logging into Docker registry"
+      - echo "$SECRET_USERNAME" | docker login -u "$SECRET_USERNAME" --password-stdin
   build:
     commands:
-      - echo "Hello World from buildspec.yml"
-      - echo "$SECRET_USERNAME"
+      - echo "Building Docker images..."
+      - docker build -t sk850/arsenal-db:latest .
+  
+  post_build:
+    commands:
+      - echo "Pushing Docker Image..."
+      - docker push sk850/arsenal-db:latest .
   
 artifacts:
   files:
