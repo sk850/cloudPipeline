@@ -6,5 +6,5 @@ phases:
       - echo "Hello World from buildspec.yml"
   
   artifacts:
-    files:
+    file:
       -Dockerfile
